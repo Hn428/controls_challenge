@@ -3,3 +3,5 @@ data/
 report.html
 models/tinyphysics_*.onnx
 *.swp
+config.bat
+node_modules

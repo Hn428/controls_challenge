@@ -14,6 +14,27 @@
 
 </div>
 
+## 🏎️ My Solution — MPC Controller (`total_cost ≈ 62 vs PID's 111`)
+
+This fork adds a **Model Predictive Controller** ([`controllers/mpc.py`](controllers/mpc.py)) that
+beats the PID baseline by **~44%** at submission scale (5000 segments):
+
+| Controller | lataccel_cost | jerk_cost | **total_cost** |
+|---|---|---|---|
+| PID (baseline) | 1.71 | 25.6 | 111.3 |
+| **MPC (mine)** | 0.86 | 19.3 | **62.1** |
+
+It identifies the simulator's plant dynamics (a linear ARX model with a ~2-step steer dead-time,
+found via open-loop system ID), then each step solves a small quadratic program over the
+`future_plan` preview that directly minimizes the challenge cost. See
+**[`submission/README.md`](submission/README.md)** for the full write-up and
+**[`controller_results.md`](controller_results.md)** for results across 100/500/1000/5000 segments.
+A simpler feedforward+preview+PID controller is also included
+([`controllers/preview_pid_ff.py`](controllers/preview_pid_ff.py)), along with the tuning
+(`tune.py`) and validation (`validate_top.py`) tooling.
+
+---
+
 Machine learning models can drive cars, paint beautiful pictures and write passable rap. But they famously suck at doing low level controls. Your goal is to write a good controller. This repo contains a model that simulates the lateral movement of a car, given steering commands. The goal is to drive this "car" well for a given desired trajectory.
 
 ## Getting Started

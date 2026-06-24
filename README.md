@@ -33,6 +33,30 @@ A simpler feedforward+preview+PID controller is also included
 ([`controllers/preview_pid_ff.py`](controllers/preview_pid_ff.py)), along with the tuning
 (`tune.py`) and validation (`validate_top.py`) tooling.
 
+### Key files in this fork
+
+| File | Description |
+|---|---|
+| [`controllers/mpc.py`](controllers/mpc.py) | The MPC controller (self-contained — plant model + tuned weights baked in). |
+| [`controllers/preview_pid_ff.py`](controllers/preview_pid_ff.py) | Feedforward + future-plan preview + PID controller (fallback). |
+| [`model_coeffs.json`](model_coeffs.json) | Plant model from open-loop system ID (optional; `mpc.py` also hardcodes it). |
+| [`tune.py`](tune.py) | Batch eval / compare / validate / random-search tooling. |
+| [`validate_top.py`](validate_top.py) | Top-K → 100/500/1000-segment validation → winner selection → 5000-seg final. |
+| [`controller_results.md`](controller_results.md) | Results tables + method write-up. |
+| `report.html` | Official `eval.py` report (mpc vs pid, 5000 segments). |
+
+**Reproduce the result:**
+
+```bash
+python eval.py --model_path ./models/tinyphysics.onnx --data_path ./data --num_segs 5000 \
+  --test_controller mpc --baseline_controller pid
+```
+
+The five files used for the challenge submission are collected in
+[`final5/`](final5/): `report.html`, `mpc.py`, `controller_results.md`,
+`README.md`, and `tune.py`. The controller (`mpc.py`) runs standalone; the rest
+document the method and results.
+
 ---
 
 Machine learning models can drive cars, paint beautiful pictures and write passable rap. But they famously suck at doing low level controls. Your goal is to write a good controller. This repo contains a model that simulates the lateral movement of a car, given steering commands. The goal is to drive this "car" well for a given desired trajectory.
